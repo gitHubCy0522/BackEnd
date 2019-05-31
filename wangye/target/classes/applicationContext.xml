@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- spring配置文件beans根元素 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"	
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.2.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<!-- 加载database.properties文件 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       	<property name="location">
+       		<value>classpath:database.properties</value>
+       	</property>
+    </bean>
+       
+  	<!-- 数据源对象 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+       	<property name="url" value="jdbc:mysql://127.0.0.1:3306/smbms?useUnicode=true&amp;characterEncoding=utf-8" />
+       	<property name="driverClassName"  value="com.mysql.jdbc.Driver"/>
+       	<property name="username"  value="${user}"/>
+       	<property name="password"  value="${password}"/>
+    </bean>     
+
+	<!-- SqlSessionFactory对象 -->
+	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation">
+			<value>classpath:mybatis3.2.2-config.xml</value>
+		</property>
+		<property name="typeAliasesPackage" value="cn.nsw.entity"/>
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 当mybatis的xml文件和mapper接口不在相同包下时，需要用mapperLocations属性指定xml文件的路径。  
+         *是个通配符，代表所有的文件，**代表所有目录下 -->   
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:cn/nsw/dao/*-Mapper.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 定义数据映射器扫描类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="SqlSessionFactory"/>
+		<property name="basePackage" value="cn.nsw.dao"/>
+	</bean>
+
+	<!-- 以上是 spring 和 mybatis 整合 -->
+
+	<!-- 扫描某包下注解元素,生成业务逻辑Bean -->
+	<context:component-scan base-package="cn.nsw.service.*" />
+	
+	<!-- 定义事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 添加声明式注解支持   -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 以上是业务逻辑配置 -->
+		  	
+</beans>
