@@ -1,31 +1,23 @@
 package cn.nsw.entity;
 
 public class User {
-	private Integer userid;
-	private String username;
-	private String password;
-
-	public Integer getUserid() {
-		return userid;
+	private String userName;
+	private String userPassword;
+	public String getUserName() {
+		return userName;
 	}
-
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-
-	public String getUsername() {
-		return username;
+	public String getUserPassword() {
+		return userPassword;
 	}
-
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
 	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+	
+	@Override
+	public String toString() {
+		return "User [userName=" + userName + ", userPassword=" + userPassword + "]";
 	}
 }

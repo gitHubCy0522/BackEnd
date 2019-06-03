@@ -1,8 +1,14 @@
 package cn.nsw.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.nsw.entity.User;
 
 public interface UserDao {
 	
-	public User selectUser(String name,String pwd);
+	public List<User> selectUser();
+	
+	public User getUser(@Param("name")String name,@Param("pwd")String pwd);
 }
